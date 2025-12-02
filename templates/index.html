@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Árvore Binária de Busca – Trabalho Acadêmico</title>
+    <style>
+        :root {
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --border-card: #d1d5db;
+            --accent: #1f2937;
+            --accent-soft: #374151;
+            --accent-light: #4b5563;
+            --primary: #111827;
+            --btn-bg: #111827;
+            --btn-bg-hover: #000000;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-body);
+            margin: 0;
+            padding: 20px;
+            color: #111827;
+        }
+
+        .page {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--accent-light);
+        }
+
+        .header h1 {
+            margin: 6px 0 4px;
+            font-size: 22px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--primary);
+        }
+
+        .header h3 {
+            margin: 4px 0 0;
+            font-size: 14px;
+            font-weight: 400;
+            color: var(--accent-light);
+        }
+
+        .meta {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--accent-soft);
+        }
+
+        .meta span {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 2px;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 8px;
+            padding: 16px 18px 20px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 6px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+        }
+
+        p {
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 4px 0 8px;
+        }
+
+        .section-label {
+            font-weight: 600;
+            margin-top: 6px;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: var(--accent-soft);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 6px 8px;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            min-width: 230px;
+            font-size: 13px;
+        }
+
+        button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid #111827;
+            cursor: pointer;
+            background: var(--btn-bg);
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        button:hover {
+            background: var(--btn-bg-hover);
+        }
+
+        #status {
+            margin-top: 6px;
+            min-height: 18px;
+            font-size: 12px;
+        }
+
+        #status.ok { color: #166534; }
+        #status.err { color: #b91c1c; }
+
+        #inorder {
+            margin-top: 8px;
+            font-size: 12px;
+            background: #f9fafb;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            padding: 6px 8px;
+        }
+
+        #treeCanvas {
+            margin-top: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+
+        ul {
+            margin: 4px 0 4px 18px;
+            padding: 0;
+            font-size: 13px;
+        }
+
+        li { margin-bottom: 3px; }
+
+        .footer {
+            text-align: right;
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 14px;
+        }
+
+        @media (max-width: 900px) {
+            .content { grid-template-columns: 1fr; }
+        }
+
+        @media print {
+            body { background: #ffffff; padding: 0; }
+            .page { max-width: 100%; margin: 0; }
+            .card { box-shadow: none; }
+            #treeCanvas { border: 1px solid #000000; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <h2>Universidade / Curso de Engenharia de Software</h2>
+        <h1>Estruturas de Dados – Árvore Binária de Busca</h1>
+        <h3>Implementação e Visualização com Apoio de Python e Grafos</h3>
+        <div class="meta">
+            <span>Disciplina: Laboratório de Programação / Grafos e Árvores</span>
+            <span>Aluno: _______________________________________</span>
+            <span>Semestre: ______ / ______</span>
+        </div>
+    </header>
+
+    <main class="content">
+        <!-- Lado esquerdo: sistema -->
+        <section class="card">
+            <div class="card-title">Aplicação Web Interativa</div>
+
+            <div class="section-label">1. Lista inicial de valores</div>
+            <p>
+                Informe aproximadamente 25 números inteiros (ordenados ou não). Os dados serão enviados para o
+                backend em Python, que construirá uma <strong>árvore binária de busca balanceada</strong>.
+            </p>
+
+            <div class="row">
+                <input id="listaInput" type="text"
+                       placeholder="Ex.: 50 30 70 20 40 60 80 10 25 35 45 55 65 75 85">
+                <button id="btnConstruir">Construir árvore</button>
+            </div>
+            <p style="font-size: 12px; color: #4b5563;">
+                Caso a entrada fique em branco, será utilizada uma lista padrão definida no programa em Python.
+            </p>
+
+            <div class="section-label">2. Operações sobre a árvore</div>
+            <p>
+                Após a construção, é possível solicitar ao backend as operações de
+                <strong>inserção</strong>, <strong>busca + remoção</strong> e
+                <strong>remoção direta</strong>. A cada alteração os dados retornam em formato JSON e a
+                visualização é atualizada no navegador.
+            </p>
+
+            <div class="row">
+                <input id="valorOperacao" type="number" placeholder="Valor">
+                <button id="btnInserir">Inserir</button>
+                <button id="btnProcurarRemover">Procurar + Remover</button>
+                <button id="btnRemover">Remover direto</button>
+                <button id="btnRedesenhar">Redesenhar árvore</button>
+            </div>
+
+            <div id="status"></div>
+            <div id="inorder"></div>
+
+            <canvas id="treeCanvas" width="1000" height="480"></canvas>
+        </section>
+
+        <!-- Lado direito: explicação teórica -->
+        <aside class="card">
+            <div class="card-title">Descrição do Trabalho</div>
+
+            <div class="section-label">Objetivo</div>
+            <p>
+                Desenvolver uma aplicação web que integre <strong>Python</strong> e
+                <strong>HTML/JavaScript</strong>, capaz de construir e manipular uma
+                árvore binária de busca a partir de dados fornecidos pelo usuário, utilizando conceitos
+                de grafos para a visualização.
+            </p>
+
+            <div class="section-label">Integração Python &amp; Front-end</div>
+            <ul>
+                <li>O backend, implementado em Python (Flask), mantém a lógica da BST.</li>
+                <li>As operações são expostas por meio de uma API REST simples em JSON.</li>
+                <li>O front-end envia e recebe dados usando <code>fetch()</code> e redesenha a árvore em um
+                    elemento <code>&lt;canvas&gt;</code>.</li>
+            </ul>
+
+            <div class="section-label">Operações Disponíveis</div>
+            <ul>
+                <li><strong>Inicialização:</strong> /api/init – recebe a lista de números e devolve a
+                    árvore balanceada.</li>
+                <li><strong>Inserção:</strong> /api/inserir – inclui novo elemento e reequilibra a estrutura.</li>
+                <li><strong>Busca + remoção:</strong> /api/procurar_remover – remove o valor, caso encontrado.</li>
+                <li><strong>Remoção direta:</strong> /api/remover – exclui o valor informado, se existir.</li>
+            </ul>
+
+            <div class="section-label">Resultados Esperados</div>
+            <p>
+                A aplicação ilustra, de maneira prática, os impactos do balanceamento sobre a altura da árvore
+                e o custo das operações de busca, ao mesmo tempo em que reforça a integração entre
+                estruturas de dados e desenvolvimento web.
+            </p>
+
+            <div class="footer">
+                Trabalho acadêmico elaborado para fins de estudo em Estruturas de Dados.<br>
+                Data: ____ / ____ / ______
+            </div>
+        </aside>
+    </main>
+</div>
+
+<script>
+    let arvoreAtual = null; // objeto JSON {valor, esquerda, direita}
+
+    function atualizarStatus(msg, tipo) {
+        const div = document.getElementById("status");
+        div.textContent = msg || "";
+        div.className = "";
+        if (tipo) div.classList.add(tipo);
+    }
+
+    function atualizarInorder(valores) {
+        const div = document.getElementById("inorder");
+        if (!valores || valores.length === 0) {
+            div.textContent = "";
+            return;
+        }
+        div.textContent =
+            "Elementos em ordem (percorrimento in-order): " + valores.join(", ");
+    }
+
+    // ================ DESENHO NO CANVAS ================
+
+    function getAltura(no) {
+        if (!no) return -1;
+        return 1 + Math.max(getAltura(no.esquerda), getAltura(no.direita));
+    }
+
+    function calcularPosicoes(no, profundidade, xMin, xMax, levelHeight) {
+        if (!no) return;
+        const x = (xMin + xMax) / 2;
+        const y = (profundidade + 1) * levelHeight;
+        no.x = x;
+        no.y = y;
+
+        if (no.esquerda) {
+            calcularPosicoes(no.esquerda, profundidade + 1, xMin, x, levelHeight);
+        }
+        if (no.direita) {
+            calcularPosicoes(no.direita, profundidade + 1, x, xMax, levelHeight);
+        }
+    }
+
+    function desenharArestas(ctx, no) {
+        if (!no) return;
+        ctx.beginPath();
+        if (no.esquerda) {
+            ctx.moveTo(no.x, no.y);
+            ctx.lineTo(no.esquerda.x, no.esquerda.y);
+        }
+        if (no.direita) {
+            ctx.moveTo(no.x, no.y);
+            ctx.lineTo(no.direita.x, no.direita.y);
+        }
+        ctx.stroke();
+
+        desenharArestas(ctx, no.esquerda);
+        desenharArestas(ctx, no.direita);
+    }
+
+    function desenharNos(ctx, no) {
+        if (!no) return;
+        const raio = 16;
+
+        ctx.beginPath();
+        ctx.fillStyle = "#e5e7eb";
+        ctx.strokeStyle = "#111827";
+        ctx.lineWidth = 1.5;
+        ctx.arc(no.x, no.y, raio, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#111827";
+        ctx.font = "bold 12px Arial";
+        const texto = String(no.valor);
+        const largura = ctx.measureText(texto).width;
+        ctx.fillText(texto, no.x - largura / 2, no.y + 4);
+
+        desenharNos(ctx, no.esquerda);
+        desenharNos(ctx, no.direita);
+    }
+
+    function desenharArvore() {
+        const canvas = document.getElementById("treeCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (!arvoreAtual) {
+            ctx.fillStyle = "#6b7280";
+            ctx.font = "13px Arial";
+            ctx.fillText("Nenhuma árvore construída.", 20, 30);
+            return;
+        }
+
+        const altura = getAltura(arvoreAtual);
+        const levelHeight = canvas.height / (altura + 2);
+        const marginX = 40;
+        calcularPosicoes(arvoreAtual, 0, marginX, canvas.width - marginX, levelHeight);
+
+        ctx.strokeStyle = "#cbd5e1";
+        ctx.lineWidth = 1.5;
+        desenharArestas(ctx, arvoreAtual);
+        desenharNos(ctx, arvoreAtual);
+    }
+
+    // ================ CHAMADAS À API PYTHON ================
+
+    async function postJSON(url, payload) {
+        const resp = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload || {})
+        });
+        return resp.json();
+    }
+
+    document.getElementById("btnConstruir").addEventListener("click", async () => {
+        const entrada = document.getElementById("listaInput").value.trim();
+        let numeros = [];
+        if (entrada) {
+            const partes = entrada.split(/[ ,;]+/);
+            for (let p of partes) {
+                if (!p) continue;
+                const n = Number(p);
+                if (!Number.isNaN(n)) numeros.push(n);
+            }
+        }
+
+        const data = await postJSON("/api/init", { numeros });
+        arvoreAtual = data.arvore || null;
+        atualizarStatus(data.msg, data.ok ? "ok" : "err");
+        atualizarInorder(data.valores || []);
+        desenharArvore();
+    });
+
+    document.getElementById("btnInserir").addEventListener("click", async () => {
+        const v = document.getElementById("valorOperacao").value;
+        const data = await postJSON("/api/inserir", { valor: v });
+        arvoreAtual = data.arvore || null;
+        atualizarStatus(data.msg, data.ok ? "ok" : "err");
+        atualizarInorder(data.valores || []);
+        desenharArvore();
+    });
+
+    document.getElementById("btnProcurarRemover").addEventListener("click", async () => {
+        const v = document.getElementById("valorOperacao").value;
+        const data = await postJSON("/api/procurar_remover", { valor: v });
+        arvoreAtual = data.arvore || null;
+        atualizarStatus(data.msg, data.ok ? "ok" : "err");
+        atualizarInorder(data.valores || []);
+        desenharArvore();
+    });
+
+    document.getElementById("btnRemover").addEventListener("click", async () => {
+        const v = document.getElementById("valorOperacao").value;
+        const data = await postJSON("/api/remover", { valor: v });
+        arvoreAtual = data.arvore || null;
+        atualizarStatus(data.msg, data.ok ? "ok" : "err");
+        atualizarInorder(data.valores || []);
+        desenharArvore();
+    });
+
+    document.getElementById("btnRedesenhar").addEventListener("click", () => {
+        desenharArvore();
+        atualizarStatus("Árvore redesenhada no canvas.", "ok");
+    });
+
+    // Estado inicial
+    desenharArvore();
+</script>
+</body>
+</html>
