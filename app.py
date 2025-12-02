@@ -1,11 +1,6 @@
-# app.py
 from flask import Flask, render_template, request, jsonify
 
 app = Flask(__name__)
-
-# =========================
-#   ESTRUTURA DE ÁRVORE
-# =========================
 
 class Node:
     def __init__(self, valor):
@@ -14,7 +9,6 @@ class Node:
         self.direita = None
 
 def construir_bst_balanceada(valores_ordenados):
-    """Constroi BST balanceada a partir de lista ORDENADA (sem repetição)."""
     if not valores_ordenados:
         return None
     meio = len(valores_ordenados) // 2
@@ -24,7 +18,6 @@ def construir_bst_balanceada(valores_ordenados):
     return raiz
 
 def busca_bst(raiz, alvo):
-    """Retorna True se o valor estiver na BST."""
     atual = raiz
     while atual:
         if alvo == atual.valor:
@@ -36,7 +29,6 @@ def busca_bst(raiz, alvo):
     return False
 
 def node_to_dict(no):
-    """Serializa a árvore em dicionário para enviar como JSON."""
     if no is None:
         return None
     return {
@@ -45,22 +37,13 @@ def node_to_dict(no):
         "direita": node_to_dict(no.direita),
     }
 
-# =========================
-#   ESTADO GLOBAL SIMPLES
-# =========================
-
-valores_unicos = []  # lista ordenada sem repetição
-raiz = None          # raiz atual da árvore
+valores_unicos = []
+raiz = None
 
 def reconstruir(valores):
-    """Reconstrói árvore balanceada a partir da lista de valores."""
     global valores_unicos, raiz
     valores_unicos = sorted(set(valores))
     raiz = construir_bst_balanceada(valores_unicos)
-
-# =========================
-#   ROTAS FLASK
-# =========================
 
 @app.route("/")
 def index():
@@ -78,7 +61,6 @@ def api_init():
         return jsonify({"ok": False, "msg": "Os valores devem ser inteiros."}), 400
 
     if not nums:
-        # lista padrão para demonstração
         nums = [50, 30, 70, 20, 40, 60, 80, 10, 25, 35, 45, 55, 65, 75, 85]
 
     reconstruir(nums)
@@ -177,5 +159,4 @@ def api_remover():
     })
 
 if __name__ == "__main__":
-    # debug=True só para desenvolvimento
     app.run(debug=True)
